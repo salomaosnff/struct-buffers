@@ -1,0 +1,157 @@
+<section id="tipo-de-dados">
+  <h2>Tipos de dados</h2>
+  <h3>Tipos primitivos</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Tamanho</th>
+        <th>Descrição</th>
+      </tr>
+    </thead>
+    <tr>
+      <td>Boolean</td>
+      <td>1 bit</td>
+      <td>1 ou 0</td>
+    </tr>
+    <tr>
+      <td>Int8</td>
+      <td>1 byte</td>
+      <td>Número inteiro de 8 bits com sinal</td>
+    </tr>
+    <tr>
+      <td>UInt8</td>
+      <td>1 byte</td>
+      <td>Número inteiro de 8 bits sem sinal</td>
+    </tr>
+    <tr>
+      <td>Int16</td>
+      <td>2 bytes</td>
+      <td>Número inteiro de 16 bits com sinal</td>
+    </tr>
+    <tr>
+      <td>UInt16</td>
+      <td>2 bytes</td>
+      <td>Número inteiro de 16 bits sem sinal</td>
+    </tr>
+    <tr>
+      <td>Int32</td>
+      <td>4 bytes</td>
+      <td>Número inteiro de 32 bits com sinal</td>
+    </tr>
+    <tr>
+      <td>UInt32</td>
+      <td>4 bytes</td>
+      <td>Número inteiro de 32 bits sem sinal</td>
+    </tr>
+    <tr>
+      <td>Float32</td>
+      <td>4 bytes</td>
+      <td>Número de ponto flutuante de 32 bits</td>
+    </tr>
+    <tr>
+      <td>Float64</td>
+      <td>8 bytes</td>
+      <td>Número de ponto flutuante de 64 bits</td>
+    </tr>
+    <tr>
+      <td>DateTime</td>
+      <td>4 bytes</td>
+      <td>Data e hora</td>
+    </tr>
+  </table>
+
+  <h3>Listas</h3>
+
+  <p>
+    Para declarar uma lista é necessário conhecer o seu tamanho máximo e o tipo
+    de seus elementos.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Tamanho mínimo</th>
+        <th>Qtd. Elementos</th>
+      </tr>
+    </thead>
+    <tr>
+      <td>Array8</td>
+      <td>1 bytes</td>
+      <td>até 255 itens</td>
+    </tr>
+    <tr>
+      <td>Array16</td>
+      <td>2 bytes</td>
+      <td>até 65.535 itens</td>
+    </tr>
+    <tr>
+      <td>Array32</td>
+      <td>4 bytes</td>
+      <td>até 4.294.967.295 itens</td>
+    </tr>
+  </table>
+
+  <h4>Formato do buffer da lista:</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Tamanho</th>
+        <th colspan="4">Elementos</th>
+      </tr>
+    </thead>
+    <tr>
+      <td>1, 2 ou 4 bytes</td>
+      <td>ELEMENTO 1</td>
+      <td>ELEMENTO 2</td>
+      <td>...</td>
+      <td>ELEMENTO N</td>
+    </tr>
+  </table>
+
+  <h4>Exemplo</h4>
+
+  <pre>
+    <span data-group-target="listf-byte-0" data-group="|listf-byte-0|">Tamanho do array: 4</span>
+    Array8&lt;<span data-group-target="listf-byte-1|listf-byte-2|listf-byte-3|listf-byte-4|listf-byte-5|listf-byte-6|listf-byte-7|listf-byte-8" data-group="listf-byte-1|listf-byte-2|listf-byte-3|listf-byte-4|listf-byte-5|listf-byte-6|listf-byte-7|listf-byte-8">UInt16</span>&gt;[<span data-group-target="listf-byte-1|listf-byte-2" data-group="|listf-byte-1|listf-byte-2|">255</span>, <span data-group-target="listf-byte-3|listf-byte-4" data-group="|listf-byte-3|listf-byte-4|">512</span>, <span data-group-target="listf-byte-5|listf-byte-6" data-group="|listf-byte-5|listf-byte-6|">1024</span>, <span data-group-target="listf-byte-7|listf-byte-8" data-group="|listf-byte-7|listf-byte-8|">2048</span>]
+  </pre>
+
+  <pre id="listf" class="buffer">
+    0x04 0xFF 0x02 0x00 0x04 0x00 0x08 0x00
+  </pre>
+
+  <h3>Buffers</h3>
+  <p>
+    Buffers são idênticos à Arrays, porém, são transformados em
+    <code>Buffer</code> ou <code>ArrayBuffer</code> após a decodificação.
+    Buffers podem ser do tipo <code>Buffer8</code>, <code>Buffer16</code> e
+    <code>Buffer32</code> dependendo de seu tamanho assim como Arrays.
+  </p>
+
+  <h3>Strings</h3>
+  <p>
+    Strings seguem o mesmo princício dos Arrays, porém, não é necessário definir
+    um tamanho máximo. Uma String acaba quando um caractere nulo
+    <code>
+      <span data-group-target="strf-byte-12" data-group="|strf-byte-12|"
+        >0x00</span
+      >
+    </code>
+    é encontrado.
+  </p>
+
+  <h4>Exemplo</h4>
+  <pre>
+    "<span data-group-target="strf-byte-0" data-group="|strf-byte-0|">H</span><span data-group-target="strf-byte-1" data-group="|strf-byte-1|">e</span><span data-group-target="strf-byte-2" data-group="|strf-byte-2|">l</span><span data-group-target="strf-byte-3" data-group="|strf-byte-3|">l</span><span data-group-target="strf-byte-4" data-group="|strf-byte-4|">o</span><span data-group-target="strf-byte-5" data-group="|strf-byte-5|">&nbsp;</span><span data-group-target="strf-byte-6" data-group="|strf-byte-6|">W</span><span data-group-target="strf-byte-7" data-group="|strf-byte-7|">o</span><span data-group-target="strf-byte-8" data-group="|strf-byte-8|">r</span><span data-group-target="strf-byte-9" data-group="|strf-byte-9|">l</span><span data-group-target="strf-byte-10" data-group="|strf-byte-10|">d</span><span data-group-target="strf-byte-11" data-group="|strf-byte-11|">!</span>"
+  </pre>
+  <pre id="strf" class="buffer">
+    72 101 108 108 111 32 87 111 114 108 100 33 0
+  </pre>
+
+  <h3>JSON</h3>
+  <p>
+    JSON são idênticos à Strings, porém, são transformados em Objetos JavaScript
+    utilizando a função <code>JSON.parse()</code> após a decodificação.
+  </p>
+</section>

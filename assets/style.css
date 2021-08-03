@@ -1,0 +1,99 @@
+html,
+body {
+  background: #1b1b1b;
+  color: #eee;
+  font: normal 14px Arial;
+}
+
+pre {
+  padding: 1em;
+  border-radius: 0.25em;
+  background: #fff1;
+}
+
+code {
+  padding: 0.25em;
+  border-radius: 0.25em;
+  background: #fff1;
+}
+
+table {
+  font: normal 14px monospace;
+  text-align: left;
+  padding: 0.5em;
+  border-spacing: 1px;
+  margin: 0.5em 0;
+}
+
+table thead tr:last-of-type th,
+table > tr th {
+  background: #fff2;
+}
+
+table td,
+th {
+  white-space: nowrap;
+  padding: 0.25em;
+}
+
+.buffer {
+  width: max-content;
+}
+
+.buffer table {
+  min-width: 100%;
+  text-align: center;
+}
+
+[data-group].hover,
+.buffer table td:hover {
+  background: yellow !important;
+  color: #1b1b1b;
+}
+
+.buffer .null-byte {
+  opacity: 0;
+  cursor: default;
+}
+
+[data-group-target] {
+  cursor: pointer;
+}
+
+span[data-group-target] {
+  display: inline-block;
+  border-radius: 0.25em;
+  padding: 0.125em 0.25em;
+  color: yellow;
+  text-decoration: underline;
+}
+
+span[data-group-target]:hover {
+  display: inline-block;
+  background: yellow;
+  color: #1b1b1b;
+}
+
+colgroup col {
+  background: #1b1b1b;
+}
+
+colgroup col:nth-child(2n + 1) {
+  background: #fff1;
+}
+
+.buffer colgroup col:first-of-type {
+  width: 6em;
+}
+
+.buffer--dec colgroup col {
+  width: 33px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-between {
+  justify-content: space-between;
+}

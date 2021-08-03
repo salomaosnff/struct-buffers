@@ -1,0 +1,55 @@
+<section id="formato">
+  <h2 id="formato">Formato</h2>
+
+  <p>Todos os structs são codificados seguindo padrão:</p>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Código da Struct</th>
+        <th>Campos nulos</th>
+        <th colspan="4">Payload</th>
+      </tr>
+    </thead>
+    <tr>
+      <th>Tamanho em bytes</th>
+      <td>Log<sub>2</sub>(Qtd. structs) / 8</td>
+      <td>Qtd. campos / 8</td>
+      <td>DADO 1</td>
+      <td>DADO 2</td>
+      <td>...</td>
+      <td>DADO N</td>
+    </tr>
+  </table>
+
+  <p>
+    Para cada campo da struct deve-se reservar um bit no começo do buffer para
+    armazenar se o campo está nulo.
+  </p>
+  <p>
+    Todos os campos do tipo
+    <span data-group-target="format-bit-16|format-bit-17">boolean</span>
+    devem ser movidos para o início da
+    <span data-group-target="format-byte-2">seção payload</span> que fica após a
+    <span data-group-target="format-byte-1">seção campos nulos</span>.
+  </p>
+  <pre>
+    // Struct
+    <span data-group="|format-byte-0|" data-group-target="format-byte-0">0x00</span> {       // Código da struct
+      <span data-group="|format-bit-8|bool" data-group-target="format-bit-8">a</span>: bool
+      <span data-group="|format-bit-9|bool" data-group-target="format-bit-9">b</span>: bool?   // ? Indica que este campo pode ser Nulo
+      <span data-group="|format-bit-10|bool" data-group-target="format-bit-10">c</span>: bool?
+    }
+
+    // Payload
+    {
+      a: <span data-group="|format-bit-16|" data-group-target="format-bit-16">true</span>, // Será definido na seção payload
+      b: <span data-group="|format-bit-17|" data-group-target="format-bit-17">false</span>, // Será definido na seção payload
+      c: <span data-group="|format-bit-10|" data-group-target="format-bit-10">NULL</span> // Não será definido na seção payload.
+    }
+  </pre>
+
+  <pre id="format" class="buffer" data-type="bin,hex">
+    0b00000000 0b00100000 0b10000000
+  </pre>
+</section>
