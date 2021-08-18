@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "module": "commonjs",
     "target": "ESNext",
     "lib": [
       "DOM",
@@ -8,7 +9,8 @@
     "downlevelIteration": true,
     "moduleResolution": "Node",
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "rootDir": "src"
   },
   "include": ["src/*"],
   "exclude": ["node_modules"]

@@ -7,107 +7,106 @@ export class BrowserBytes extends Bytes {
     return this.buffer.byteLength;
   }
 
-  constructor(data: Uint8Array = new Uint8Array()) {
+  constructor(data: Uint8Array = new Uint8Array(0)) {
     super();
-    this.buffer = new DataView(data);
+    this.buffer = new DataView(data.buffer);
   }
 
   protected async _write(data: Uint8Array) {
-    const buffer = await new Blob([
+    const arrayBuffer = await new Blob([
       this.buffer.buffer.slice(0, this.byte),
       data,
       this.buffer.buffer.slice(this.byte + data.byteLength),
     ]).arrayBuffer();
 
-    this.buffer = new DataView(buffer);
+    this.buffer = new DataView(arrayBuffer);
   }
 
   async expand(size: number): Promise<void> {
-    const buffer = await new Blob([
-      this.buffer.buffer,
-      new ArrayBuffer(size),
+    const arrayBuffer = await new Blob([
+      this.buffer,
+      new Uint8Array(size),
     ]).arrayBuffer();
-
-    this.buffer = new DataView(buffer);
+    this.buffer = new DataView(arrayBuffer);
   }
 
-  async readInt8() {
+  protected async readInt8() {
     return this.buffer.getInt8(this.byte);
   }
 
-  async readInt16() {
+  protected async readInt16() {
     return this.buffer.getInt16(this.byte);
   }
 
-  async readInt32() {
+  protected async readInt32() {
     return this.buffer.getInt32(this.byte);
   }
 
-  async readUint8() {
+  protected async readUint8() {
     return this.buffer.getUint8(this.byte);
   }
 
-  async readUint16() {
+  protected async readUint16() {
     return this.buffer.getUint16(this.byte);
   }
 
-  async readUint32() {
+  protected async readUint32() {
     return this.buffer.getUint32(this.byte);
   }
 
-  async readFloat() {
+  protected async readFloat() {
     return this.buffer.getFloat32(this.byte);
   }
 
-  async readDouble() {
+  protected async readDouble() {
     return this.buffer.getFloat64(this.byte);
   }
 
-  protected async readBigInt(): Promise<bigint> {
+  protected async readBigInt() {
     return this.buffer.getBigInt64(this.byte);
   }
 
-  protected async readBigUInt(): Promise<bigint> {
+  protected async readBigUInt() {
     return this.buffer.getBigUint64(this.byte);
   }
 
-  async writeInt8(value: number): Promise<void> {
+  protected async writeInt8(value: number): Promise<void> {
     this.buffer.setInt8(this.byte, value);
   }
 
-  async writeInt16(value: number): Promise<void> {
+  protected async writeInt16(value: number): Promise<void> {
     this.buffer.setInt16(this.byte, value);
   }
 
-  async writeInt32(value: number): Promise<void> {
+  protected async writeInt32(value: number): Promise<void> {
     this.buffer.setInt32(this.byte, value);
   }
 
-  async writeUint8(value: number): Promise<void> {
+  protected async writeUint8(value: number): Promise<void> {
     this.buffer.setUint8(this.byte, value);
   }
 
-  async writeUint16(value: number): Promise<void> {
+  protected async writeUint16(value: number): Promise<void> {
     this.buffer.setUint16(this.byte, value);
   }
 
-  async writeUint32(value: number): Promise<void> {
+  protected async writeUint32(value: number): Promise<void> {
     this.buffer.setUint32(this.byte, value);
   }
 
-  async writeFloat(value: number): Promise<void> {
+  protected async writeFloat(value: number): Promise<void> {
     this.buffer.setFloat32(this.byte, value);
   }
 
-  async writeDouble(value: number): Promise<void> {
+  protected async writeDouble(value: number): Promise<void> {
     this.buffer.setFloat64(this.byte, value);
   }
 
-  protected async writeBigInt(value: bigint): Promise<void> {
+  protected async writeBigInt(value: bigint) {
     this.buffer.setBigInt64(this.byte, value);
   }
 
-  protected async writeBigUInt(value: bigint): Promise<void> {
+  protected async writeBigUInt(value: bigint) {
     this.buffer.setBigUint64(this.byte, value);
   }
 
@@ -115,11 +114,11 @@ export class BrowserBytes extends Bytes {
     return new Uint8Array(this.buffer.buffer.slice(start, end));
   }
 
-  arrayBuffer() {
+  toArrayBuffer() {
     return this.buffer.buffer;
   }
 
   async toBytes() {
-    return new Uint8Array(this.buffer.buffer);
+    return new Uint8Array(this.toArrayBuffer());
   }
 }

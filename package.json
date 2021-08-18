@@ -7,12 +7,20 @@
   "author": "Salomao Neto <salomaosnff3@gmail.com>",
   "license": "MIT",
   "private": false,
+  "scripts": {
+    "build": "yarn ts-node ./src",
+    "dev": "parcel index.html --open"
+  },
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "typescript": "^4.3.5"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/node": "^16.6.1",
-    "ts-node": "^10.2.0"
-  }
+    "parcel-bundler": "^1.12.5",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5"
+  },
+  "browserslist": [
+    "last 1 Chrome version"
+  ]
 }

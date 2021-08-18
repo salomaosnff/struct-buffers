@@ -2,7 +2,6 @@ import { Type } from "./type";
 import bool from "./primitive/boolean";
 import { Bytes } from "../bytes/bytes";
 import { Class } from "../util";
-import boolean from "./primitive/boolean";
 
 type FieldType<T> = T extends Type<infer U> ? U : never;
 
@@ -41,7 +40,9 @@ export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
     );
 
     this.hasBooleans = this.fields.some(([_, field]) => field.type === bool);
-    this.hasNullables = this.fields.some(([_, field]) => !field.required);
+    this.hasNullables = this.fields.some(
+      ([_, field]) => field.required === false
+    );
   }
 
   private create() {
@@ -56,7 +57,7 @@ export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
 
   async read(bytes: Bytes): Promise<R> {
     const obj = this.create();
-    let booleansReaded = false;
+    let booleansReaded = !this.hasBooleans;
 
     if (this.hasNullables) {
       // Set null fields
@@ -75,8 +76,10 @@ export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
 
     // Load fields
     for (const [key, field] of this.fields) {
-      if (field.type !== bool && !booleansReaded) {
-        bytes.skip(1, "byte");
+      if (!booleansReaded && field.type !== bool) {
+        if (bytes.bit > 0) {
+          bytes.skip(1, "byte");
+        }
         booleansReaded = true;
       }
 
@@ -100,7 +103,7 @@ export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
 
     // Field values
     for (const [key, field] of this.fields) {
-      if (value[key] ?? null !== null) {
+      if ((value[key] ?? null) !== null) {
         await field.type.write(value[key], bytes);
       }
     }

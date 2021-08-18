@@ -6,14 +6,14 @@ import {
   buffer32,
   string,
   time32,
-  uint32,
   dateTime,
+  int32,
 } from "../types";
 import { Time } from "../types/time/time";
 
 const primitives = new Map<Function, Type<any>>([
   [Boolean, boolean],
-  [Number, uint32],
+  [Number, int32],
   [String, string],
   [Date, dateTime],
   [BigInt, bigInt],

@@ -5,20 +5,20 @@ import { StructType } from "./types/struct";
 
 export type Class<T> = new (...args: any[]) => T;
 
-export const isNode = typeof window === "undefined";
+export const isNode = typeof process.pid !== "undefined";
 export const isBrowser = !isNode;
 
 export function createBytes(buffer = new Uint8Array()) {
   return isNode ? new NodeBytes(Buffer.from(buffer)) : new BrowserBytes(buffer);
 }
 
-export const TextEncoder: typeof window.TextEncoder = isNode
+export const TextEncoder: typeof self.TextEncoder = isNode
   ? require("util").TextEncoder
-  : window.TextEncoder;
+  : self.TextEncoder;
 
-export const TextDecoder: typeof window.TextDecoder = isNode
+export const TextDecoder: typeof self.TextDecoder = isNode
   ? require("util").TextDecoder
-  : window.TextDecoder;
+  : self.TextDecoder;
 
 export async function printBytes(bytes: Bytes, base = 16) {
   let str = `Tamanho em bytes: ${bytes.length}\n`;
