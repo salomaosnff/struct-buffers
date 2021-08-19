@@ -1,5 +1,4 @@
 import { inspect, InspectOptionsStylized } from "util";
-import { TypeRegistry } from "../../type-registry";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;
@@ -7,8 +6,6 @@ const HOUR = MINUTE * 60;
 const DAY = HOUR * 24;
 
 const normalize = (n: number, f: boolean) => (f ? n : Math.floor(n));
-
-Number() + Number();
 
 export class Time {
   public inMilliseconds: number;

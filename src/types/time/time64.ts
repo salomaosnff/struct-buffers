@@ -3,7 +3,7 @@ import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 import { Time } from "./time";
 
-export class Time64Type implements Type<Time> {
+export class Time64Type extends Type<Time> {
   async write(value: Time, bytes: Bytes): Promise<void> {
     await bytes.setDouble(value.inMilliseconds / 1000);
   }

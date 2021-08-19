@@ -2,7 +2,7 @@ import { Bytes } from "../../bytes/bytes";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
-export class UInt16Type implements Type<number> {
+export class UInt16Type extends Type<number> {
   async write(value: number, bytes: Bytes): Promise<void> {
     await bytes.setUint16(value);
   }

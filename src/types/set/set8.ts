@@ -1,17 +1,21 @@
 import { Bytes } from "../../bytes/bytes";
-import { DefineType } from "../../decorators/type";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
-@DefineType(["type"])
-export class Set8Type<T> implements Type<Set<T>> {
+export class Set8Type<T> extends Type<Set<T>> {
   MAX_LENGTH = 0xff;
+
+  constructor(type: Type<T>) {
+    super([type]);
+  }
+
+  get type() {
+    return this.subTypes[0];
+  }
 
   async validate(value: Set<T>) {
     return value.size <= this.MAX_LENGTH;
   }
-
-  constructor(public type: Type<T>) {}
 
   protected async writeLengthByte(length: number, bytes: Bytes) {
     await bytes.setUint8(length);

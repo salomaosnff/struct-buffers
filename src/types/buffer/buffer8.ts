@@ -2,7 +2,7 @@ import { Bytes } from "../../bytes/bytes";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
-export class Buffer8Type implements Type<Uint8Array> {
+export class Buffer8Type extends Type<Uint8Array> {
   MAX_LENGTH = 0xff;
 
   async validate(buffer: Uint8Array) {

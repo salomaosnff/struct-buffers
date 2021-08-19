@@ -7,11 +7,11 @@ const cloneDeep = require("lodash.clonedeep");
 export interface TypeRegistryEntry<T> {
   name: string;
   type: Type<T>;
-  subTypeKeys?: string[];
 }
 
 export class TypeRegistry {
   static types: Array<TypeRegistryEntry<any>> = [];
+  static locked = false;
 
   static get size() {
     return TypeRegistry.types.length;
@@ -21,43 +21,52 @@ export class TypeRegistry {
     return Math.ceil(Math.log2(TypeRegistry.length) / 8);
   }
 
+  static clear() {
+    TypeRegistry.types = [];
+  }
+
   static register<T>(dataType: Type<T> | Class<T>) {
-    const subTypeKeys = Reflect.getMetadata("struct:typeKeys", dataType);
+    if (this.locked) {
+      throw new Error("TypeRegistry is locked");
+    }
     const name = TypeRegistry.getTypeName(dataType);
     const type = TypeRegistry.getTypeSchema(dataType);
     const index = TypeRegistry._findTypeIndex(name);
     this.types.splice(index, 0, {
       type,
       name,
-      subTypeKeys,
     } as TypeRegistryEntry<T>);
   }
 
-  static clear() {
-    TypeRegistry.types = [];
+  static lock() {
+    if (!this.locked) {
+      this.locked = true;
+      this.types = Object.freeze(this.types) as Array<TypeRegistryEntry<any>>;
+    }
   }
 
-  static async setBytesType<T>(type: Type<T> | Class<T>, bytes: Bytes) {
-    await this.setBytesCode(this.getCode(type), bytes);
+  static async setBytesFromType<T>(dataType: Type<T> | Class<T>, bytes: Bytes) {
+    await this.setBytesCode(this.getCode(dataType), bytes);
+    const type = this.getTypeSchema(dataType);
 
     // Subtypes
-    const entry = TypeRegistry.getEntry(TypeRegistry.getCode(type));
-    if (entry && entry.subTypeKeys) {
-      const { subTypeKeys } = entry;
-      for (let typeKey of subTypeKeys) {
-        await this.setBytesType(type[typeKey], bytes);
+    if (type.subTypes.length > 0) {
+      for (let subType of type.subTypes) {
+        await this.setBytesFromType(subType, bytes);
       }
     }
   }
 
-  static async getBytesType<T>(bytes: Bytes): Promise<Type<T>> {
+  static async getTypeFromBytes<T>(bytes: Bytes): Promise<Type<T>> {
     const code = await this.getBytesCode(bytes);
-    const { type, subTypeKeys } = cloneDeep(TypeRegistry.getEntry<T>(code));
+    const entry = TypeRegistry.getEntry<T>(code);
+    const type = Object.assign(Object.create(entry.type), entry.type, {
+      subTypes: [],
+    }) as Type<T>;
 
-    if (subTypeKeys) {
-      for (let typeKey of subTypeKeys) {
-        const subType = await TypeRegistry.getBytesType(bytes);
-        type[typeKey] = subType;
+    if (entry.type.subTypes.length > 0) {
+      for (let _ of entry.type.subTypes) {
+        type.subTypes.push(await TypeRegistry.getTypeFromBytes(bytes));
       }
     }
 

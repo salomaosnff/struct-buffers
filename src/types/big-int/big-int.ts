@@ -2,7 +2,7 @@ import { Bytes } from "../../bytes/bytes";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
-export class BigIntType implements Type<bigint> {
+export class BigIntType extends Type<bigint> {
   write(value: bigint, bytes: Bytes): Promise<void> {
     return bytes.setBigInt(value);
   }

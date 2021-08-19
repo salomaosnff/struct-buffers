@@ -3,7 +3,7 @@ import { Bytes } from "../../bytes/bytes";
 import { Type } from "../type";
 import { TypeRegistry } from "../../type-registry";
 
-export class StringType implements Type<string> {
+export class StringType extends Type<string> {
   encoder = new TextEncoder();
   decoder = new TextDecoder();
 

@@ -27,13 +27,15 @@ export type Struct<S extends Schema> = {
     >;
   };
 
-export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
+export class StructType<T extends Schema, R = Struct<T>> extends Type<R> {
   // private keys: string[];
   private fields: [string, Field<any>][];
   private hasBooleans = false;
   private hasNullables = false;
 
   constructor(public schema: T, public factory?: Class<R>) {
+    super();
+
     // this.keys = Object.keys(schema);
     this.fields = Object.entries(schema).sort((a, b) =>
       a[1].type === bool && b[1].type !== bool ? -1 : 0

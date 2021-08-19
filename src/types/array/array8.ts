@@ -1,17 +1,21 @@
 import { Bytes } from "../../bytes/bytes";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
-import { DefineType } from "../../decorators/type";
 
-@DefineType(["type"])
-export class Array8Type<T> implements Type<T[]> {
+export class Array8Type<T> extends Type<T[]> {
   MAX_LENGTH = 0xff;
+
+  constructor(type: Type<T>) {
+    super([type]);
+  }
+
+  get type() {
+    return this.subTypes[0];
+  }
 
   async validate(value: T[]) {
     return value.length <= this.MAX_LENGTH;
   }
-
-  constructor(public type: Type<T>) {}
 
   protected async writeLengthByte(length: number, bytes: Bytes) {
     await bytes.setUint8(length);

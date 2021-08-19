@@ -8,17 +8,19 @@ export interface DynamicValue<T = any> {
   value: T;
 }
 
-export class DynamicType implements Type<DynamicValue<any>> {
-  constructor() {}
+export class DynamicType extends Type<DynamicValue<any>> {
+  constructor() {
+    super();
+  }
 
   async write(data: DynamicValue<any>, bytes: Bytes): Promise<void> {
     const { type, value } = data;
-    await TypeRegistry.setBytesType(type, bytes);
+    await TypeRegistry.setBytesFromType(type, bytes);
     await TypeRegistry.getTypeSchema(type).write(value, bytes);
   }
 
   async read(bytes: Bytes): Promise<any> {
-    const type = await TypeRegistry.getBytesType(bytes);
+    const type = await TypeRegistry.getTypeFromBytes(bytes);
     return type.read(bytes);
   }
 
@@ -27,7 +29,6 @@ export class DynamicType implements Type<DynamicValue<any>> {
   }
 }
 
-export default new DynamicType() as unknown as Omit<
-  Type<DynamicValue>,
-  "create"
-> & { create: DynamicType["create"] };
+export default new DynamicType() as unknown as Type<DynamicValue> & {
+  create: DynamicType["create"];
+};

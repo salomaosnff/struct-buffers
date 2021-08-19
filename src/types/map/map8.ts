@@ -1,11 +1,19 @@
 import { Bytes } from "../../bytes/bytes";
-import { DefineType } from "../../decorators/type";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
-@DefineType(["key", "value"])
-export class Map8Type<K, V> implements Type<Map<K, V>> {
-  constructor(public key: Type<K>, public value: Type<V>) {}
+export class Map8Type<K, V> extends Type<Map<K, V>> {
+  constructor(key: Type<K>, value: Type<V>) {
+    super([key, value]);
+  }
+
+  get key() {
+    return this.subTypes[0];
+  }
+
+  get value() {
+    return this.subTypes[1];
+  }
 
   protected async writeLengthByte(length: number, bytes: Bytes) {
     await bytes.setUint8(length);

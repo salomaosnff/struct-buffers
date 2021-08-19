@@ -2,7 +2,7 @@ import { Bytes } from "../../bytes/bytes";
 import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
-export class DateTimeType implements Type<Date> {
+export class DateTimeType extends Type<Date> {
   async write(value: Date, bytes: Bytes) {
     await bytes.setDouble(value.getTime() / 1000);
   }
