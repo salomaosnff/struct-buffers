@@ -12,6 +12,7 @@
     "dev": "parcel index.html --open"
   },
   "dependencies": {
+    "lodash.clonedeep": "^4.5.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

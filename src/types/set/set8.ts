@@ -1,6 +1,9 @@
 import { Bytes } from "../../bytes/bytes";
+import { DefineType } from "../../decorators/type";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
+@DefineType(["type"])
 export class Set8Type<T> implements Type<Set<T>> {
   MAX_LENGTH = 0xff;
 
@@ -37,6 +40,8 @@ export class Set8Type<T> implements Type<Set<T>> {
     return arr;
   }
 }
+
+TypeRegistry.register(Set8Type);
 
 export default function <T>(type: Type<T>) {
   return new Set8Type(type);

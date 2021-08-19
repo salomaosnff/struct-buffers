@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class Int8Type implements Type<number> {
@@ -10,5 +11,7 @@ export class Int8Type implements Type<number> {
     return bytes.getInt8();
   }
 }
+
+TypeRegistry.register(Int8Type);
 
 export default new Int8Type();

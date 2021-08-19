@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class FloatType implements Type<number> {
@@ -10,5 +11,7 @@ export class FloatType implements Type<number> {
     return bytes.getFloat();
   }
 }
+
+TypeRegistry.register(FloatType);
 
 export default new FloatType();

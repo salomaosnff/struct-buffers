@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 import { Array8Type } from "./array8";
 
@@ -13,6 +14,8 @@ export class Array32Type<T> extends Array8Type<T> {
     return bytes.getUint32();
   }
 }
+
+TypeRegistry.register(Array32Type);
 
 export default function <T>(type: Type<T>) {
   return new Array32Type(type);

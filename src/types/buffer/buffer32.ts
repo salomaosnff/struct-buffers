@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Buffer8Type } from "./buffer8";
 
 export class Buffer32Type extends Buffer8Type {
@@ -12,5 +13,7 @@ export class Buffer32Type extends Buffer8Type {
     return bytes.getUint32();
   }
 }
+
+TypeRegistry.register(Buffer32Type);
 
 export default new Buffer32Type();

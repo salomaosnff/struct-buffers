@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class DoubleType implements Type<number> {
@@ -10,5 +11,7 @@ export class DoubleType implements Type<number> {
     return bytes.getDouble();
   }
 }
+
+TypeRegistry.register(DoubleType);
 
 export default new DoubleType();

@@ -28,13 +28,13 @@ export type Struct<S extends Schema> = {
   };
 
 export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
-  private keys: string[];
+  // private keys: string[];
   private fields: [string, Field<any>][];
   private hasBooleans = false;
   private hasNullables = false;
 
   constructor(public schema: T, public factory?: Class<R>) {
-    this.keys = Object.keys(schema);
+    // this.keys = Object.keys(schema);
     this.fields = Object.entries(schema).sort((a, b) =>
       a[1].type === bool && b[1].type !== bool ? -1 : 0
     );
@@ -45,14 +45,8 @@ export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
     );
   }
 
-  private create() {
-    const obj = this.factory ? Object.create(this.factory.prototype) : {};
-
-    for (const key of this.keys) {
-      obj[key] = undefined;
-    }
-
-    return obj;
+  public create(data: R = {} as R): R {
+    return Object.assign(Object.create(this.factory?.prototype ?? {}), data);
   }
 
   async read(bytes: Bytes): Promise<R> {
@@ -98,7 +92,9 @@ export class StructType<T extends Schema, R = Struct<T>> implements Type<R> {
         await bytes.setBool((value[key] ?? null) === null);
       }
 
-      bytes.skip(1, "byte");
+      if (bytes.bit > 0) {
+        bytes.skip(1, "byte");
+      }
     }
 
     // Field values

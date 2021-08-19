@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class DateTimeType implements Type<Date> {
@@ -11,4 +12,5 @@ export class DateTimeType implements Type<Date> {
   }
 }
 
+TypeRegistry.register(DateTimeType);
 export default new DateTimeType();

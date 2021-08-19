@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class BigUIntType implements Type<bigint> {
@@ -10,5 +11,7 @@ export class BigUIntType implements Type<bigint> {
     return bytes.getBigUInt();
   }
 }
+
+TypeRegistry.register(BigUIntType);
 
 export default new BigUIntType();

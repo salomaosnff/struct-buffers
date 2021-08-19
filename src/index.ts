@@ -1,34 +1,16 @@
 import "reflect-metadata";
 
-import { Time } from "./types/time/time";
 import { Field } from "./decorators/field";
 import { Struct } from "./decorators/struct";
-import {
-  createBytes,
-  decodeClass,
-  encodeClass,
-  encodeInstance,
-  encrypt,
-  printBytes,
-} from "./util";
-import {
-  array16,
-  array8,
-  bigInt,
-  bigUInt,
-  int8,
-  map8,
-  set8,
-  string,
-} from "./types";
-import { readFileSync, writeFileSync } from "fs";
-import { NodeBytes } from "./bytes/node";
+import { decodeClass, encodeClass, printBytes } from "./util";
+import { array16, array32, array8, int8, map8, string, uint8 } from "./types";
+import dynamic, { DynamicValue } from "./types/dynamic";
 
 Error.stackTraceLimit = Infinity;
 
 @Struct()
 class Artist {
-  @Field()
+  @Field({ type: uint8 })
   id: number;
 
   @Field()
@@ -36,6 +18,9 @@ class Artist {
 
   @Field()
   createdAt: Date;
+
+  @Field({ type: array8(dynamic) })
+  test: DynamicValue[];
 }
 
 @Struct()
@@ -52,70 +37,36 @@ class Song {
   @Field({ type: array16(string) })
   scope: string[];
 
-  @Field()
-  bool_0: boolean;
-
-  @Field()
-  bool_1: boolean;
-
-  @Field()
-  bool_2: boolean;
-
-  @Field()
-  bool_3: boolean;
-
-  @Field()
-  bool_4: boolean;
-
-  @Field()
-  bool_5: boolean;
-
-  @Field()
-  bool_6: boolean;
-
   @Field({ required: false })
-  bool_7?: boolean;
+  bool: boolean;
 }
 
-// const worker = new Worker("worker.ts");
-
-// worker.postMessage("test");
-
-// worker.addEventListener("message", async (e) => {
-//   const buffer = e.data as Uint8Array;
-
-//   console.log(await decodeClass(Song, createBytes(buffer)));
-// });
-
 async function main() {
-  const obj: Song = {
-    id: 1,
-    artist: {
-      id: 1,
-      createdAt: new Date(),
-      name: "A".repeat(1000),
-    },
-    bool_0: true,
-    bool_1: true,
-    bool_2: true,
-    bool_3: true,
-    bool_4: true,
-    bool_5: true,
-    bool_6: true,
-    bool_7: false,
-    title: "T".repeat(1000),
-    scope: new Array(1000).fill("Test"),
+  const artist: Artist = {
+    id: 2,
+    createdAt: new Date(),
+    name: "The name of the artist",
+    test: [
+      dynamic.create(array16(string), ["Olá"]),
+      dynamic.create(int8, 1),
+      dynamic.create(array32(dynamic), [
+        dynamic.create(
+          map8(string, int8),
+          new Map([
+            ["first", 1],
+            ["second", 2],
+          ])
+        ),
+      ]),
+      dynamic.create(string, "Awesome string"),
+    ],
   };
 
-  const encoded = await encodeClass(Song, obj);
-
+  const encoded = await encodeClass(Artist, artist);
   console.log(await printBytes(encoded, 2));
-  console.log(await decodeClass(Song, encoded));
-
-  // console.time("json");
-  // const data = JSON.stringify(obj);
-  // console.log(data.length, data);
-  // console.timeEnd("json");
+  console.dir(await decodeClass(Artist, encoded), {
+    depth: 10,
+  });
 }
 
 main();

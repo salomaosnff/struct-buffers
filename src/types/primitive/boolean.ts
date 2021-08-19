@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class BooleanType implements Type<boolean> {
@@ -11,4 +12,5 @@ export class BooleanType implements Type<boolean> {
   }
 }
 
+TypeRegistry.register(BooleanType);
 export default new BooleanType();

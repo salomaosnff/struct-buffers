@@ -1,6 +1,7 @@
 import { TextDecoder, TextEncoder } from "../../util";
 import { Bytes } from "../../bytes/bytes";
 import { Type } from "../type";
+import { TypeRegistry } from "../../type-registry";
 
 export class StringType implements Type<string> {
   encoder = new TextEncoder();
@@ -30,4 +31,5 @@ export class StringType implements Type<string> {
   }
 }
 
+TypeRegistry.register(StringType);
 export default new StringType();

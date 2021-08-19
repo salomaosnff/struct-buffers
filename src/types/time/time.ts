@@ -1,4 +1,5 @@
 import { inspect, InspectOptionsStylized } from "util";
+import { TypeRegistry } from "../../type-registry";
 
 const SECOND = 1000;
 const MINUTE = SECOND * 60;

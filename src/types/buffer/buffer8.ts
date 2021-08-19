@@ -1,4 +1,5 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class Buffer8Type implements Type<Uint8Array> {
@@ -32,5 +33,7 @@ export class Buffer8Type implements Type<Uint8Array> {
     return buffer;
   }
 }
+
+TypeRegistry.register(Buffer8Type);
 
 export default new Buffer8Type();

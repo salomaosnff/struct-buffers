@@ -1,6 +1,9 @@
 import { Bytes } from "../../bytes/bytes";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
+import { DefineType } from "../../decorators/type";
 
+@DefineType(["type"])
 export class Array8Type<T> implements Type<T[]> {
   MAX_LENGTH = 0xff;
 
@@ -37,6 +40,8 @@ export class Array8Type<T> implements Type<T[]> {
     return arr;
   }
 }
+
+TypeRegistry.register(Array8Type);
 
 export default function <T>(type: Type<T>) {
   return new Array8Type(type);

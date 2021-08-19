@@ -1,6 +1,9 @@
 import { Bytes } from "../../bytes/bytes";
+import { DefineType } from "../../decorators/type";
+import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
+@DefineType(["key", "value"])
 export class Map8Type<K, V> implements Type<Map<K, V>> {
   constructor(public key: Type<K>, public value: Type<V>) {}
 
@@ -35,6 +38,8 @@ export class Map8Type<K, V> implements Type<Map<K, V>> {
     return map;
   }
 }
+
+TypeRegistry.register(Map8Type);
 
 export default function <K, V>(key: Type<K>, value: Type<V>) {
   return new Map8Type(key, value);
