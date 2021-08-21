@@ -1,8 +1,10 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
-import { Type } from "../type";
+import { IntType } from "./int";
 
-export class Int8Type extends Type<number> {
+export class Int8Type extends IntType {
+  MIN = -0x80;
+  MAX = 0x7f;
+
   async write(value: number, bytes: Bytes): Promise<void> {
     await bytes.setInt8(value);
   }
@@ -11,7 +13,5 @@ export class Int8Type extends Type<number> {
     return bytes.getInt8();
   }
 }
-
-TypeRegistry.register(Int8Type);
 
 export default new Int8Type();

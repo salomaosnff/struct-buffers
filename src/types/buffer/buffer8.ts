@@ -5,6 +5,10 @@ import { Type } from "../type";
 export class Buffer8Type extends Type<Uint8Array> {
   MAX_LENGTH = 0xff;
 
+  is(value: any) {
+    return value instanceof Uint8Array && value.length < this.MAX_LENGTH;
+  }
+
   async validate(buffer: Uint8Array) {
     return buffer.byteLength <= this.MAX_LENGTH;
   }
@@ -33,7 +37,5 @@ export class Buffer8Type extends Type<Uint8Array> {
     return buffer;
   }
 }
-
-TypeRegistry.register(Buffer8Type);
 
 export default new Buffer8Type();

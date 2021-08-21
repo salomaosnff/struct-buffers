@@ -8,7 +8,9 @@ export type Class<T> = new (...args: any[]) => T;
 export const isNode = typeof process.pid !== "undefined";
 export const isBrowser = !isNode;
 
-export function createBytes(buffer = new Uint8Array()) {
+export function createBytes(
+  buffer: Uint8Array | Uint8Array = new Uint8Array()
+) {
   return isNode ? new NodeBytes(Buffer.from(buffer)) : new BrowserBytes(buffer);
 }
 
@@ -20,10 +22,10 @@ export const TextDecoder: typeof self.TextDecoder = isNode
   ? require("util").TextDecoder
   : self.TextDecoder;
 
-export async function printBytes(bytes: Bytes, base = 16) {
+export function printBytes(bytes: Bytes | Uint8Array, base = 16) {
   let str = `Tamanho em bytes: ${bytes.length}\n`;
 
-  const buffer = await bytes.toBytes();
+  const buffer = bytes instanceof Uint8Array ? bytes : bytes.toBytes();
   let pad = base === 2 ? 8 : 2;
 
   str += buffer.reduce(
@@ -63,12 +65,19 @@ export async function decodeClass<T>(type: Class<T>, bytes: Bytes): Promise<T> {
   return getStruct(type).read(bytes) as any as Promise<T>;
 }
 
-export async function encrypt(bytes: Bytes, mask: Bytes) {
-  const buffer = await bytes.toBytes();
-  const maskKey = await mask.toBytes();
+export function mask(bytes: Bytes | Uint8Array, mask: Bytes | Uint8Array) {
+  if (bytes instanceof Bytes) {
+    bytes = bytes.toBytes();
+  }
+
+  if (mask instanceof Bytes) {
+    mask = mask.toBytes();
+  }
+
+  const buffer = new Uint8Array(bytes);
 
   for (let i = 0; i < buffer.length; i++) {
-    buffer[i] |= maskKey[i % maskKey.length];
+    buffer[i] ^= mask[i % mask.length];
   }
 
   return buffer;

@@ -1,8 +1,10 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
-import { Type } from "../type";
+import { IntType } from "./int";
 
-export class Int32Type extends Type<number> {
+export class Int32Type extends IntType {
+  MIN = -0x80000000;
+  MAX = 0x7fffffff;
+
   async write(value: number, bytes: Bytes): Promise<void> {
     await bytes.setInt32(value);
   }
@@ -11,7 +13,5 @@ export class Int32Type extends Type<number> {
     return bytes.getInt32();
   }
 }
-
-TypeRegistry.register(Int32Type);
 
 export default new Int32Type();

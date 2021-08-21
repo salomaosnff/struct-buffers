@@ -14,6 +14,4 @@ export class Buffer32Type extends Buffer8Type {
   }
 }
 
-TypeRegistry.register(Buffer32Type);
-
 export default new Buffer32Type();

@@ -14,6 +14,4 @@ export class Buffer16Type extends Buffer8Type {
   }
 }
 
-TypeRegistry.register(Buffer16Type);
-
 export default new Buffer16Type();

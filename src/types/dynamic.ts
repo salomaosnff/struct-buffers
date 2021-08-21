@@ -2,10 +2,14 @@ import { Bytes } from "../bytes/bytes";
 import { Type } from "./type";
 import { TypeRegistry } from "../type-registry";
 import { Class } from "../util";
+import { PRIMITIVE_MAP } from "./primitives-map";
+import { dynamic } from ".";
 
-export interface DynamicValue<T = any> {
-  type: Type<T>;
-  value: T;
+export class DynamicValue<T = any> {
+  public type: Type<T>;
+  constructor(type: Type<T> | Class<T>, public value: T) {
+    this.type = TypeRegistry.getTypeSchema(type);
+  }
 }
 
 export class DynamicType extends Type<DynamicValue<any>> {
@@ -13,19 +17,46 @@ export class DynamicType extends Type<DynamicValue<any>> {
     super();
   }
 
-  async write(data: DynamicValue<any>, bytes: Bytes): Promise<void> {
+  is() {
+    return true;
+  }
+
+  async write(data: any, bytes: Bytes): Promise<void> {
+    if (!(data instanceof DynamicValue)) {
+      data = dynamic.create(data);
+    }
+
     const { type, value } = data;
+
     await TypeRegistry.setBytesFromType(type, bytes);
-    await TypeRegistry.getTypeSchema(type).write(value, bytes);
+    await type.write(value, bytes);
+
+    if (bytes.bit > 0) {
+      bytes.skip(1, "byte");
+    }
   }
 
   async read(bytes: Bytes): Promise<any> {
     const type = await TypeRegistry.getTypeFromBytes(bytes);
-    return type.read(bytes);
+    const result = await type.read(bytes);
+
+    if (bytes.bit > 0) {
+      bytes.skip(1, "byte");
+    }
+
+    return result;
   }
 
-  create<R>(type: Type<R> | Class<R>, value: R) {
-    return { type, value } as DynamicValue<R>;
+  create<R>(value: R, type: Type<R> | Class<R> = (value as any).constructor) {
+    if (value instanceof DynamicValue) {
+      return value;
+    }
+
+    if (typeof type === "function") {
+      type = PRIMITIVE_MAP.get(type) ?? type;
+    }
+
+    return new DynamicValue(type, value);
   }
 }
 

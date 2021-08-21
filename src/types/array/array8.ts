@@ -1,12 +1,21 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
+import { Class } from "../../util";
 import { Type } from "../type";
+import { uint8 } from "../uint";
 
 export class Array8Type<T> extends Type<T[]> {
-  MAX_LENGTH = 0xff;
+  MAX_LENGTH = uint8.MAX;
 
-  constructor(type: Type<T>) {
+  constructor(type: Type<T> | Class<T>) {
     super([type]);
+  }
+
+  is(value: any) {
+    return (
+      Array.isArray(value) &&
+      value.length <= this.MAX_LENGTH &&
+      value.every((s) => this.type.is(s))
+    );
   }
 
   get type() {
@@ -45,8 +54,6 @@ export class Array8Type<T> extends Type<T[]> {
   }
 }
 
-TypeRegistry.register(Array8Type);
-
-export default function <T>(type: Type<T>) {
+export default function <T>(type: Type<T> | Class<T>) {
   return new Array8Type(type);
 }

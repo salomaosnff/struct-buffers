@@ -1,9 +1,13 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
+import { uint8 } from "../uint";
 
 export class Set8Type<T> extends Type<Set<T>> {
-  MAX_LENGTH = 0xff;
+  readonly MAX_SIZE = uint8.MAX;
+
+  is(value: any) {
+    return value instanceof Set && value.size <= this.MAX_SIZE;
+  }
 
   constructor(type: Type<T>) {
     super([type]);
@@ -11,10 +15,6 @@ export class Set8Type<T> extends Type<Set<T>> {
 
   get type() {
     return this.subTypes[0];
-  }
-
-  async validate(value: Set<T>) {
-    return value.size <= this.MAX_LENGTH;
   }
 
   protected async writeLengthByte(length: number, bytes: Bytes) {
@@ -44,8 +44,6 @@ export class Set8Type<T> extends Type<Set<T>> {
     return arr;
   }
 }
-
-TypeRegistry.register(Set8Type);
 
 export default function <T>(type: Type<T>) {
   return new Set8Type(type);

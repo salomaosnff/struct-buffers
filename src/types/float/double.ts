@@ -3,6 +3,10 @@ import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class DoubleType extends Type<number> {
+  is(value: any) {
+    return typeof value === "number";
+  }
+
   async write(value: number, bytes: Bytes): Promise<void> {
     await bytes.setDouble(value);
   }
@@ -11,7 +15,5 @@ export class DoubleType extends Type<number> {
     return bytes.getDouble();
   }
 }
-
-TypeRegistry.register(DoubleType);
 
 export default new DoubleType();

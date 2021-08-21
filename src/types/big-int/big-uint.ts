@@ -3,6 +3,10 @@ import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class BigUIntType extends Type<bigint> {
+  is(value: any) {
+    return typeof value === "bigint" && value >= 0;
+  }
+
   write(value: bigint, bytes: Bytes): Promise<void> {
     return bytes.setBigUInt(value);
   }
@@ -11,7 +15,5 @@ export class BigUIntType extends Type<bigint> {
     return bytes.getBigUInt();
   }
 }
-
-TypeRegistry.register(BigUIntType);
 
 export default new BigUIntType();

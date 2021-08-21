@@ -1,8 +1,14 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
+import { uint8 } from "../uint";
 
 export class Map8Type<K, V> extends Type<Map<K, V>> {
+  readonly MAX_SIZE = uint8.MAX;
+
+  is(value: any) {
+    return value instanceof Map && value.size <= this.MAX_SIZE;
+  }
+
   constructor(key: Type<K>, value: Type<V>) {
     super([key, value]);
   }
@@ -46,8 +52,6 @@ export class Map8Type<K, V> extends Type<Map<K, V>> {
     return map;
   }
 }
-
-TypeRegistry.register(Map8Type);
 
 export default function <K, V>(key: Type<K>, value: Type<V>) {
   return new Map8Type(key, value);

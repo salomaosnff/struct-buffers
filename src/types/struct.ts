@@ -33,8 +33,22 @@ export class StructType<T extends Schema, R = Struct<T>> extends Type<R> {
   private hasBooleans = false;
   private hasNullables = false;
 
-  constructor(public schema: T, public factory?: Class<R>) {
-    super();
+  is(value: any) {
+    if (this.factory && value instanceof this.factory) {
+      return true;
+    }
+
+    return this.fields.every(
+      ([k, field]) => k in value && field.type.is(value[k])
+    );
+  }
+
+  constructor(
+    public schema: T,
+    public factory?: Class<R>,
+    name: string = factory?.name
+  ) {
+    super([], name);
 
     // this.keys = Object.keys(schema);
     this.fields = Object.entries(schema).sort((a, b) =>
@@ -110,7 +124,8 @@ export class StructType<T extends Schema, R = Struct<T>> extends Type<R> {
 
 export default function struct<S extends Schema, R = Struct<S>>(
   schema: S,
-  factory?: Class<R>
+  factory?: Class<R>,
+  name?: string
 ) {
-  return new StructType(schema, factory);
+  return new StructType(schema, factory, name);
 }

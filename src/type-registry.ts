@@ -25,7 +25,7 @@ export class TypeRegistry {
     TypeRegistry.types = [];
   }
 
-  static register<T>(dataType: Type<T> | Class<T>) {
+  static register<T, R>(dataType: Type<T> | Class<T>) {
     if (this.locked) {
       throw new Error("TypeRegistry is locked");
     }
@@ -60,6 +60,7 @@ export class TypeRegistry {
   static async getTypeFromBytes<T>(bytes: Bytes): Promise<Type<T>> {
     const code = await this.getBytesCode(bytes);
     const entry = TypeRegistry.getEntry<T>(code);
+
     const type = Object.assign(Object.create(entry.type), entry.type, {
       subTypes: [],
     }) as Type<T>;
@@ -105,15 +106,16 @@ export class TypeRegistry {
     const typeName = TypeRegistry.getTypeName(type);
     const index = TypeRegistry._findTypeIndex(typeName);
     const foundType = this.types[index];
+
     if (!foundType || typeName !== foundType.name) {
       throw new TypeError(`Type "${typeName}" not registered`);
     }
+
     return index;
   }
 
   static getTypeName(type: Type<any> | Class<any>) {
-    const isClass = String(type).startsWith("class ");
-    return isClass ? (type as Function).name : type.constructor.name;
+    return type.name;
   }
 
   static getTypeSchema<T>(dataType: Type<T> | Class<T>): Type<T> {
@@ -155,6 +157,3 @@ export class TypeRegistry {
     return index;
   }
 }
-
-// Register Dynamic Type
-TypeRegistry.register(DynamicType);

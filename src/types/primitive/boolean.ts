@@ -3,6 +3,10 @@ import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class BooleanType extends Type<boolean> {
+  is(value: any) {
+    return typeof value === "boolean";
+  }
+
   async write(value: boolean, bytes: Bytes) {
     await bytes.setBool(value);
   }
@@ -12,5 +16,4 @@ export class BooleanType extends Type<boolean> {
   }
 }
 
-TypeRegistry.register(BooleanType);
 export default new BooleanType();

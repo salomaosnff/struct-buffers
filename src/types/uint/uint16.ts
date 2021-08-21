@@ -1,8 +1,9 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
-import { Type } from "../type";
+import { UIntType } from "./uint";
 
-export class UInt16Type extends Type<number> {
+export class UInt16Type extends UIntType {
+  MAX = 0xffff;
+
   async write(value: number, bytes: Bytes): Promise<void> {
     await bytes.setUint16(value);
   }
@@ -11,7 +12,5 @@ export class UInt16Type extends Type<number> {
     return bytes.getUint16();
   }
 }
-
-TypeRegistry.register(UInt16Type);
 
 export default new UInt16Type();

@@ -7,6 +7,10 @@ export class StringType extends Type<string> {
   encoder = new TextEncoder();
   decoder = new TextDecoder();
 
+  is(value: any) {
+    return typeof value === "string";
+  }
+
   async write(value: string, bytes: Bytes) {
     const data = this.encoder.encode(value);
 
@@ -16,20 +20,23 @@ export class StringType extends Type<string> {
 
   async read(bytes: Bytes) {
     let data: number[] = [];
+    let lastCode = 0;
 
     for (let i = bytes.byte; i < bytes.length; i++) {
-      const code = await bytes.getInt8();
+      const code = await bytes.getUint8();
 
-      if (code === 0 && (await bytes.getInt8()) === 3) {
-        break;
+      if (code === 0) {
+        if (lastCode === 3) {
+          break;
+        }
+      } else if (code !== 3) {
+        data.push(code);
       }
-
-      data.push(code);
+      lastCode = code;
     }
 
     return this.decoder.decode(new Uint8Array(data));
   }
 }
 
-TypeRegistry.register(StringType);
 export default new StringType();

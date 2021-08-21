@@ -1,10 +1,11 @@
 import { Bytes } from "../../bytes/bytes";
-import { TypeRegistry } from "../../type-registry";
+import { Class } from "../../util";
 import { Type } from "../type";
+import { uint16 } from "../uint";
 import { Array8Type } from "./array8";
 
 export class Array16Type<T> extends Array8Type<T> {
-  MAX_LENGTH = 0xffff;
+  MAX_LENGTH = uint16.MAX;
 
   protected async writeLengthByte(length: number, bytes: Bytes) {
     await bytes.setUint16(length);
@@ -15,8 +16,6 @@ export class Array16Type<T> extends Array8Type<T> {
   }
 }
 
-TypeRegistry.register(Array16Type);
-
-export default function <T>(type: Type<T>) {
+export default function <T>(type: Type<T> | Class<T>) {
   return new Array16Type(type);
 }

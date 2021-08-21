@@ -8,35 +8,43 @@ const DAY = HOUR * 24;
 const normalize = (n: number, f: boolean) => (f ? n : Math.floor(n));
 
 export class Time {
-  public inMilliseconds: number;
+  public __ms: number;
 
   constructor({ hours = 0, minutes = 0, seconds = 0, milliseconds = 0 } = {}) {
-    this.inMilliseconds =
+    this.__ms =
       hours * HOUR + minutes * MINUTE + seconds * SECOND + milliseconds;
   }
 
   static parse(inMilliseconds: number) {
     const time = new Time();
 
-    time.inMilliseconds = inMilliseconds;
+    time.__ms = inMilliseconds;
 
     return time;
   }
 
+  inMilliseconds() {
+    return this.__ms;
+  }
+
   inHours(fractional = false) {
-    return normalize(this.inMilliseconds / HOUR, fractional);
+    return normalize(this.inMilliseconds() / HOUR, fractional);
   }
 
   inMinutes(fractional = false) {
-    return normalize(this.inMilliseconds / MINUTE, fractional);
+    return normalize(this.inMilliseconds() / MINUTE, fractional);
   }
 
   inSeconds(fractional = false) {
-    return normalize(this.inMilliseconds / SECOND, fractional);
+    return normalize(this.inMilliseconds() / SECOND, fractional);
+  }
+
+  inDays(fractional = false) {
+    return normalize(this.inMilliseconds() / DAY, fractional);
   }
 
   milliseconds(fractional = false) {
-    return normalize(this.inMilliseconds % 1000, fractional);
+    return normalize(this.inMilliseconds() % 1000, fractional);
   }
 
   seconds(fractional = false) {
@@ -49,6 +57,10 @@ export class Time {
 
   hours(fractional = false) {
     return this.inHours(fractional) % DAY;
+  }
+
+  days(fractional = false) {
+    return this.inDays(fractional);
   }
 
   toDate() {
@@ -80,7 +92,7 @@ export class Time {
   }
 
   valueOf() {
-    return this.inMilliseconds;
+    return this.inMilliseconds();
   }
 
   [Symbol.toPrimitive]() {

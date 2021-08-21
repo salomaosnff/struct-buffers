@@ -3,6 +3,10 @@ import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class DateTimeType extends Type<Date> {
+  is(value: any) {
+    return value instanceof Date;
+  }
+
   async write(value: Date, bytes: Bytes) {
     await bytes.setDouble(value.getTime() / 1000);
   }
@@ -12,5 +16,4 @@ export class DateTimeType extends Type<Date> {
   }
 }
 
-TypeRegistry.register(DateTimeType);
 export default new DateTimeType();

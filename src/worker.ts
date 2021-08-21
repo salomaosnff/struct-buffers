@@ -82,5 +82,5 @@ async function encode() {
 }
 
 addEventListener("message", async (msg) => {
-  postMessage(await (await encode()).toBytes(), null);
+  postMessage((await encode()).toBytes(), null);
 });

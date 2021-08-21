@@ -9,6 +9,11 @@ export abstract class Bytes {
     return ((this.pos - this.byte) * 8) | 0;
   }
 
+  reset() {
+    this.pos = 0;
+    return this;
+  }
+
   skip(value: number, unit: "bit" | "byte") {
     if (unit === "bit") {
       this.pos += (value | 0) / 8;
@@ -29,19 +34,20 @@ export abstract class Bytes {
 
   public abstract expand(size: number): Promise<void>;
   protected abstract _write(buffer: Uint8Array): Promise<void>;
-  public abstract toBytes(): Promise<Uint8Array>;
+  public abstract toBytes(): Uint8Array;
   public abstract slice(start: number, end?: number): Uint8Array;
+  public abstract destroy(): void;
 
-  protected abstract readInt8(): Promise<number>;
-  protected abstract readInt16(): Promise<number>;
-  protected abstract readInt32(): Promise<number>;
-  protected abstract readUint8(): Promise<number>;
-  protected abstract readUint16(): Promise<number>;
-  protected abstract readUint32(): Promise<number>;
-  protected abstract readFloat(): Promise<number>;
-  protected abstract readDouble(): Promise<number>;
-  protected abstract readBigInt(): Promise<bigint>;
-  protected abstract readBigUInt(): Promise<bigint>;
+  abstract readInt8(): Promise<number>;
+  abstract readInt16(): Promise<number>;
+  abstract readInt32(): Promise<number>;
+  abstract readUint8(): Promise<number>;
+  abstract readUint16(): Promise<number>;
+  abstract readUint32(): Promise<number>;
+  abstract readFloat(): Promise<number>;
+  abstract readDouble(): Promise<number>;
+  abstract readBigInt(): Promise<bigint>;
+  abstract readBigUInt(): Promise<bigint>;
 
   protected abstract writeInt8(value: number): Promise<void>;
   protected abstract writeInt16(value: number): Promise<void>;
@@ -162,42 +168,42 @@ export abstract class Bytes {
 
   async setInt8(value: number) {
     await this.alloc(1, "byte");
-    await this.writeInt8(value);
+    await this.writeInt8(value | 0);
 
     this.skip(1, "byte");
   }
 
   async setInt16(value: number) {
     await this.alloc(2, "byte");
-    await this.writeInt16(value);
+    await this.writeInt16(value | 0);
 
     this.skip(2, "byte");
   }
 
   async setInt32(value: number) {
     await this.alloc(4, "byte");
-    await this.writeInt32(value);
+    await this.writeInt32(value | 0);
 
     this.skip(4, "byte");
   }
 
   async setUint8(value: number) {
     await this.alloc(1, "byte");
-    await this.writeUint8(value);
+    await this.writeUint8(value >>> 0);
 
     this.skip(1, "byte");
   }
 
   async setUint16(value: number) {
     await this.alloc(2, "byte");
-    await this.writeUint16(value);
+    await this.writeUint16(value >>> 0);
 
     this.skip(2, "byte");
   }
 
   async setUint32(value: number) {
     await this.alloc(4, "byte");
-    await this.writeUint32(value);
+    await this.writeUint32(value >>> 0);
 
     this.skip(4, "byte");
   }

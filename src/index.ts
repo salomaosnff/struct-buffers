@@ -2,7 +2,14 @@ import "reflect-metadata";
 
 import { Field } from "./decorators/field";
 import { Struct } from "./decorators/struct";
-import { createBytes, printBytes } from "./util";
+import {
+  createBytes,
+  decodeClass,
+  encodeClass,
+  encodeInstance,
+  mask,
+  printBytes,
+} from "./util";
 import {
   array16,
   array8,
@@ -12,93 +19,85 @@ import {
   string,
   time32,
   uint8,
+  var_int,
+  var_uint,
+  var_number,
+  uint16,
+  uint32,
+  boolean,
+  object8,
 } from "./types";
-import dynamic, { DynamicValue } from "./types/dynamic";
-import { TypeRegistry } from "./type-registry";
-import { Array8Type } from "./types/array/array8";
+import dynamic, { DynamicType, DynamicValue } from "./types/dynamic";
+import { Song } from "./example_structs/song";
 import { Time } from "./types/time/time";
+import { readFileSync, writeFileSync } from "fs";
+import { TypeRegistry } from "./type-registry";
+import { ObjectType } from "./types/var/object";
 
 Error.stackTraceLimit = Infinity;
 
 @Struct()
-class Artist {
-  // @Field({ type: uint8 })
-  // id: number;
-
-  // @Field()
-  // name: string;
-
-  // @Field()
-  // createdAt: Date;
-
-  @Field({ type: array8(dynamic) })
-  test: DynamicValue[];
-}
-
-@Struct()
-class Song {
-  @Field()
-  id: number;
-
-  @Field()
-  title: string;
-
-  @Field()
-  artist: Artist;
-
-  @Field({ type: array16(string) })
-  scope: string[];
-
-  @Field({ required: false })
-  bool: boolean;
+class Data {
+  @Field(dynamic)
+  data: any;
 }
 
 async function main() {
-  TypeRegistry.register(Artist);
-  console.log("array8", TypeRegistry.getCode(Array8Type));
-  console.log("Artist", TypeRegistry.getCode(Artist));
-  console.log("int8", TypeRegistry.getCode(int8));
-  console.log("dynamic", TypeRegistry.getCode(dynamic));
-
-  const bytes = createBytes();
-
-  console.time("dynamic write");
-  await dynamic.write(
-    dynamic.create(array8(array8(dynamic)), [
-      [dynamic.create(int8, 1)],
-      [dynamic.create(string, "Hello, World!")],
-      [
-        dynamic.create(time32, new Time({ hours: 20 })),
-        dynamic.create(array8(array8(dynamic)), [
-          [dynamic.create(string, "first"), dynamic.create(int8, 1)],
-          [dynamic.create(string, "second"), dynamic.create(int8, 2)],
-        ]),
-        dynamic.create(array8(int8), [1, 2, 3, 4, 5, 6]),
-      ],
-    ]),
-    bytes
-  );
-  console.timeEnd("dynamic write");
-
-  console.log(await printBytes(bytes, 2));
-
-  await bytes.goto("byte", 0);
-  console.time("dynamic read");
-  console.log(JSON.stringify(await dynamic.read(bytes)));
-  console.timeEnd("dynamic read");
-
-  // const artist: Artist = {
-  //   // id: 2,
-  //   // createdAt: new Date(),
-  //   // name: "The name of the artist",
-  //   test: [dynamic.create(int8, 1)],
+  // JSON 154 bytes
+  // ENCODED 49 bytes
+  // const data: Song = {
+  //   id: 32,
+  //   title: "Nome da musica",
+  //   bool: true,
+  //   duration: new Time({ minutes: 4, seconds: 45 }),
+  //   artist: {
+  //     id: 7,
+  //     name: "Nome do artista",
+  //     createdAt: new Date("1990-05-05"),
+  //   },
   // };
 
-  // const encoded = await encodeClass(Artist, artist);
-  // console.log(await printBytes(encoded, 2));
-  // console.dir(await decodeClass(Artist, encoded), {
-  //   depth: 10,
-  // });
+  // const encoded = await encodeClass(Song, data);
+  // const masked = mask(encoded, createBytes(Buffer.from("teste")));
+
+  // writeFileSync("data.bin", masked);
+
+  // console.log(printBytes(createBytes(masked)));
+
+  const data: Data = {
+    data: [
+      1,
+      new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: false, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: false, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: false, bool_2: true, bool_3: false, bool_4: true }),
+      new Song({ bool_1: false, bool_2: true, bool_3: false, bool_4: true }),
+      new Song({ bool_1: false, bool_2: true, bool_3: false, bool_4: true }),
+      new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
+      new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
+      { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
+      { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
+      { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
+      [
+        { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
+        { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
+        150,
+      ],
+      500000000n,
+    ],
+  };
+
+  const encoded = await encodeClass(Data, data);
+
+  console.log(printBytes(encoded, 2));
+
+  encoded.reset();
+
+  console.log(await decodeClass(Data, encoded));
+  console.log(JSON.stringify(data).length);
 }
 
 main();

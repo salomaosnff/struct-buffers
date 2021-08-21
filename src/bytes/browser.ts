@@ -30,43 +30,43 @@ export class BrowserBytes extends Bytes {
     this.buffer = new DataView(arrayBuffer);
   }
 
-  protected async readInt8() {
+  async readInt8() {
     return this.buffer.getInt8(this.byte);
   }
 
-  protected async readInt16() {
+  async readInt16() {
     return this.buffer.getInt16(this.byte);
   }
 
-  protected async readInt32() {
+  async readInt32() {
     return this.buffer.getInt32(this.byte);
   }
 
-  protected async readUint8() {
+  async readUint8() {
     return this.buffer.getUint8(this.byte);
   }
 
-  protected async readUint16() {
+  async readUint16() {
     return this.buffer.getUint16(this.byte);
   }
 
-  protected async readUint32() {
+  async readUint32() {
     return this.buffer.getUint32(this.byte);
   }
 
-  protected async readFloat() {
+  async readFloat() {
     return this.buffer.getFloat32(this.byte);
   }
 
-  protected async readDouble() {
+  async readDouble() {
     return this.buffer.getFloat64(this.byte);
   }
 
-  protected async readBigInt() {
+  async readBigInt() {
     return this.buffer.getBigInt64(this.byte);
   }
 
-  protected async readBigUInt() {
+  async readBigUInt() {
     return this.buffer.getBigUint64(this.byte);
   }
 
@@ -118,7 +118,11 @@ export class BrowserBytes extends Bytes {
     return this.buffer.buffer;
   }
 
-  async toBytes() {
+  toBytes() {
     return new Uint8Array(this.toArrayBuffer());
+  }
+
+  destroy() {
+    this.buffer = null;
   }
 }

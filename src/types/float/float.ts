@@ -3,6 +3,10 @@ import { TypeRegistry } from "../../type-registry";
 import { Type } from "../type";
 
 export class FloatType extends Type<number> {
+  is(value: any) {
+    return typeof value === "number";
+  }
+
   async write(value: number, bytes: Bytes): Promise<void> {
     await bytes.setFloat(value);
   }
@@ -11,7 +15,5 @@ export class FloatType extends Type<number> {
     return bytes.getFloat();
   }
 }
-
-TypeRegistry.register(FloatType);
 
 export default new FloatType();
