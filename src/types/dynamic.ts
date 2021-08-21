@@ -12,7 +12,7 @@ export class DynamicValue<T = any> {
   }
 }
 
-export class DynamicType extends Type<DynamicValue<any>> {
+export class DynamicType extends Type<any> {
   constructor() {
     super();
   }
@@ -60,6 +60,4 @@ export class DynamicType extends Type<DynamicValue<any>> {
   }
 }
 
-export default new DynamicType() as unknown as Type<DynamicValue> & {
-  create: DynamicType["create"];
-};
+export default new DynamicType() as unknown as Type<DynamicValue> & DynamicType;

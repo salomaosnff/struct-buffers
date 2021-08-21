@@ -2,44 +2,17 @@ import "reflect-metadata";
 
 import { Field } from "./decorators/field";
 import { Struct } from "./decorators/struct";
-import {
-  createBytes,
-  decodeClass,
-  encodeClass,
-  encodeInstance,
-  mask,
-  printBytes,
-} from "./util";
-import {
-  array16,
-  array8,
-  int8,
-  map8,
-  set8,
-  string,
-  time32,
-  uint8,
-  var_int,
-  var_uint,
-  var_number,
-  uint16,
-  uint32,
-  boolean,
-  object8,
-} from "./types";
-import dynamic, { DynamicType, DynamicValue } from "./types/dynamic";
+import { createBytes, decodeClass, encodeClass, printBytes } from "./util";
 import { Song } from "./example_structs/song";
-import { Time } from "./types/time/time";
-import { readFileSync, writeFileSync } from "fs";
-import { TypeRegistry } from "./type-registry";
-import { ObjectType } from "./types/var/object";
+import { array8, dynamic, int8 } from "./types";
+import { writeFileSync } from "fs";
 
 Error.stackTraceLimit = Infinity;
 
 @Struct()
 class Data {
   @Field(dynamic)
-  data: any;
+  data: any[];
 }
 
 async function main() {
@@ -67,6 +40,24 @@ async function main() {
   const data: Data = {
     data: [
       1,
+      "Testando valor",
+      [
+        [[[[["array \\o/"]]]]],
+        "Value?",
+        {
+          object: {
+            with: {
+              array: [
+                new Map<string, any>([
+                  ["map", "value"],
+                  ["number?", 1],
+                  ["set?", new Set(["some", "set", "here", 2, { wow: true }])],
+                ]),
+              ],
+            },
+          },
+        },
+      ],
       new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
       new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
       new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
@@ -86,7 +77,7 @@ async function main() {
         { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
         150,
       ],
-      500000000n,
+      500000000,
     ],
   };
 
@@ -96,7 +87,10 @@ async function main() {
 
   encoded.reset();
 
-  console.log(await decodeClass(Data, encoded));
+  console.dir(await decodeClass(Data, encoded), {
+    depth: null,
+  });
+
   console.log(JSON.stringify(data).length);
 }
 

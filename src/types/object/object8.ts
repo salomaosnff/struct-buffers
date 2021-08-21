@@ -33,8 +33,6 @@ export class Object8Type extends Type<Record<string, any>> {
 
     for (const [key, value] of entries) {
       await string.write(key, bytes);
-
-      console.log(key, value);
       await dynamic.write(dynamic.create(value), bytes);
     }
   }
