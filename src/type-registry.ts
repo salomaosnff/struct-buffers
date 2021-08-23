@@ -25,6 +25,10 @@ export class TypeRegistry {
     TypeRegistry.types = [];
   }
 
+  static getTypeNames() {
+    return this.types.map((t) => t.name);
+  }
+
   static register<T, R>(dataType: Type<T> | Class<T>) {
     if (this.locked) {
       throw new Error("TypeRegistry is locked");
