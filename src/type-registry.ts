@@ -1,8 +1,6 @@
 import { Type } from "./types/type";
 import { Class } from "./util";
 import { Bytes } from "./bytes/bytes";
-import { DynamicType } from "./types/dynamic";
-const cloneDeep = require("lodash.clonedeep");
 
 export interface TypeRegistryEntry<T> {
   name: string;
