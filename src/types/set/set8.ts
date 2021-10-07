@@ -6,7 +6,11 @@ export class Set8Type<T> extends Type<Set<T>> {
   readonly MAX_SIZE = uint8.MAX;
 
   is(value: any) {
-    return value instanceof Set && value.size <= this.MAX_SIZE;
+    return (
+      value instanceof Set &&
+      value.size <= this.MAX_SIZE &&
+      Array.from(value).every((val) => this.type.is(val))
+    );
   }
 
   constructor(type: Type<T>) {
@@ -34,14 +38,14 @@ export class Set8Type<T> extends Type<Set<T>> {
   }
 
   async read(bytes: Bytes): Promise<Set<T>> {
-    const arr = new Set<T>();
+    const set = new Set<T>();
     const size = await this.readLengthByte(bytes);
 
     for (let i = 0; i < size; i++) {
-      arr.add(await this.type.read(bytes));
+      set.add(await this.type.read(bytes));
     }
 
-    return arr;
+    return set;
   }
 }
 

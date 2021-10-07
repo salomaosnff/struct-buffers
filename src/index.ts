@@ -1,107 +1,70 @@
+import { writeFile, writeFileSync } from "fs";
 import "reflect-metadata";
-export * from "./type-registry";
-export * from "./decorators";
-export * as types from "./types";
-export { createBytes } from "./util";
-
 import { Field } from "./decorators/field";
 import { Struct } from "./decorators/struct";
-import { createBytes, decodeClass, encodeClass, printBytes } from "./util";
-import { Song } from "./example_structs/song";
-import { dynamic } from "./types";
+import { TypeRegistry } from "./type-registry";
+import {
+  array8,
+  boolean,
+  dynamic,
+  string,
+  struct,
+  time32,
+  var_int,
+} from "./types";
+import { Time } from "./types/time/time";
+import map from "./types/var/map";
+import uint from "./types/var/number/uint";
+import object from "./types/var/object";
+import set from "./types/var/set";
+import { decodeClass, encodeClass, printBytes } from "./util";
 
-// Error.stackTraceLimit = Infinity;
+@Struct()
+class User {
+  @Field(uint)
+  id: number;
 
-// @Struct()
-// class Data {
-//   @Field(dynamic)
-//   data: any[];
-// }
+  @Field(string, { required: false })
+  name: string;
 
-// async function main() {
-// JSON 154 bytes
-// ENCODED 49 bytes
-// const data: Song = {
-//   id: 32,
-//   title: "Nome da musica",
-//   bool: true,
-//   duration: new Time({ minutes: 4, seconds: 45 }),
-//   artist: {
-//     id: 7,
-//     name: "Nome do artista",
-//     createdAt: new Date("1990-05-05"),
-//   },
-// };
+  @Field(string, { required: false })
+  email?: string;
 
-// const encoded = await encodeClass(Song, data);
-// const masked = mask(encoded, createBytes(Buffer.from("teste")));
+  @Field(boolean)
+  flag1: boolean;
 
-// writeFileSync("data.bin", masked);
+  @Field(boolean)
+  flag2: boolean;
 
-// console.log(printBytes(createBytes(masked)));
+  @Field(boolean)
+  flag3: boolean;
 
-// const data = { compact: true, schema: 0 };
-// const bytes = createBytes();
-// await dynamic.write(data, bytes);
+  @Field(time32)
+  time: Time;
+}
 
-// console.log(printBytes(bytes));
-// console.log(JSON.stringify(data).length);
+async function main() {
+  const userData: Partial<User> = {
+    flag1: true,
+    flag2: false,
+    flag3: true,
+    id: 5,
+    time: new Time({ hours: 4, minutes: 5, seconds: 56 }),
+  };
 
-// const data: Data = {
-//   data: [
-//     1,
-//     "Testando valor",
-//     [
-//       [[[[["array \\o/"]]]]],
-//       "Value?",
-//       {
-//         object: {
-//           with: {
-//             array: [
-//               new Map<string, any>([
-//                 ["map", "value"],
-//                 ["number?", 1],
-//                 ["set?", new Set(["some", "set", "here", 2, { wow: true }])],
-//               ]),
-//             ],
-//           },
-//         },
-//       },
-//     ],
-//     new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: false, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: false, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: false, bool_2: true, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: false, bool_2: true, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: false, bool_2: true, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
-//     new Song({ bool_1: true, bool_2: false, bool_3: false, bool_4: true }),
-//     { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
-//     { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
-//     { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
-//     [
-//       { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
-//       { bool_1: true, bool_2: false, bool_3: false, bool_4: true },
-//       150,
-//     ],
-//     500000000,
-//   ],
-// };
+  const data = await encodeClass(User, userData);
+  const decode = await decodeClass(User, data);
+  const json = JSON.stringify(userData);
 
-// const encoded = await encodeClass(Data, data);
+  console.log(decode);
+  console.log(json);
 
-// console.log(printBytes(encoded, 2));
+  console.log(data.length, json.length);
+}
 
-// encoded.reset();
+main();
 
-// console.dir(await decodeClass(Data, encoded), {
-//   depth: null,
-// });
-
-// console.log(JSON.stringify(data).length);
-// }
-
-// main();
+// export * from "./type-registry";
+// export * from "./decorators";
+// export * as types from "./types";
+// export { createBytes } from "./util";

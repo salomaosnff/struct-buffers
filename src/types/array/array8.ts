@@ -43,8 +43,8 @@ export class Array8Type<T> extends Type<T[]> {
   }
 
   async read(bytes: Bytes): Promise<T[]> {
-    const arr: T[] = [];
     const length = await this.readLengthByte(bytes);
+    const arr: T[] = new Array(length);
 
     for (let i = 0; i < length; i++) {
       arr.push(await this.type.read(bytes));

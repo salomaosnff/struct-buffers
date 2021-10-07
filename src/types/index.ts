@@ -13,3 +13,4 @@ export * from "./object";
 
 export { default as dynamic } from "./dynamic";
 export { default as struct } from "./struct";
+export { default as json } from "./json";

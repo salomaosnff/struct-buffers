@@ -236,8 +236,17 @@ export abstract class Bytes {
   }
 
   static randomBytes(size: number) {
-    return new (this as any)(
-      new Uint8Array(size).map(() => (Math.random() * 255) | 0)
-    );
+    return new Uint8Array(size).map(() => (Math.random() * 255) | 0);
+  }
+
+  mask(maskKey: Bytes | Uint8Array) {
+    const buffer = this.toBytes();
+    const mask = maskKey instanceof Bytes ? maskKey.toBytes() : maskKey;
+
+    for (let i = 0; i < buffer.length; i++) {
+      buffer[i] ^= mask[i % mask.length];
+    }
+
+    return this;
   }
 }

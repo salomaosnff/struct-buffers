@@ -1,2 +1,2 @@
-export { default as bigInt } from "./big-int";
-export { default as bigUInt } from "./big-uint";
+export { default as big_int } from "./big-int";
+export { default as big_uint } from "./big-uint";

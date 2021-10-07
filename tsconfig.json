@@ -7,10 +7,11 @@
       "ESNext"
     ],
     "downlevelIteration": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "outDir": "dist"
   },
   "include": ["src/*"],
   "exclude": ["node_modules"]

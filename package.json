@@ -8,15 +8,17 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "yarn ts-node ./src",
+    "start": "yarn ts-node ./src",
     "dev": "parcel index.html --open"
   },
   "dependencies": {
     "lodash.clonedeep": "^4.5.0",
+    "msgpack": "^1.0.3",
     "reflect-metadata": "^0.1.13",
     "ws": "^8.2.0"
   },
   "devDependencies": {
+    "@types/msgpack": "^0.0.31",
     "@types/node": "^16.6.1",
     "parcel-bundler": "^1.12.5",
     "ts-node": "^10.2.0",
